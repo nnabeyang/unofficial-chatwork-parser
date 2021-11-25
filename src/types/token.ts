@@ -6,15 +6,28 @@ export type TokenType =
   | "title_close"
   | "link"
   | "hr"
+  | "picon_open"
+  | "piconname_open"
+  | "mension_open"
+  | "reply_open"
+  | "quote_open"
+  | "quote_close"
   | "eof"
+interface Position {
+  start: number
+  end: number
+}
 export interface Token {
   type: TokenType
   value: string
+  position: Position
 }
+
 export interface ITokenizer {
   tokens: Token[]
   rules: TokenRule[]
   pos: number
+  src: string
   next(): Token
   peek(): Token
 }

@@ -22,14 +22,20 @@ const text: TokenRule = (
     }
     t.pos++
   }
-  let value = src.slice(start, t.pos)
+  const end = t.pos
+  let value = src.slice(start, end)
   let m = value.length
   if (value.charCodeAt(m - 1) === 0x0a) {
     m--
   }
+  const v = value.slice(0, m)
   t.tokens.push({
     type: "text",
-    value: value.slice(0, m),
+    value: v,
+    position: {
+      start,
+      end,
+    },
   })
   return true
 }

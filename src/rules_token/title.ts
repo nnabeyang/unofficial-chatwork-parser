@@ -14,7 +14,11 @@ export const titleOpen: TokenRule = (
   }
   t.tokens.push({
     type: "title_open",
-    value: "[title]",
+    value: "",
+    position: {
+      start: t.pos,
+      end: t.pos + 7,
+    },
   })
   t.pos += 7
   if (src.charCodeAt(t.pos) === 0x0a) {
@@ -34,13 +38,18 @@ export const titleClose: TokenRule = (
   if (silent) {
     return true
   }
-  t.tokens.push({
-    type: "title_close",
-    value: "[/title]",
-  })
+  const start = t.pos
   t.pos += 8
   if (src.charCodeAt(t.pos) === 0x0a) {
     t.pos++
   }
+  t.tokens.push({
+    type: "title_close",
+    value: "",
+    position: {
+      start,
+      end: t.pos,
+    },
+  })
   return true
 }

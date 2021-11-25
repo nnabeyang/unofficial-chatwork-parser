@@ -11,14 +11,19 @@ export const infoOpen: TokenRule = (
   if (silent) {
     return true
   }
-  t.tokens.push({
-    type: "info_open",
-    value: "[info]",
-  })
+  const start = t.pos
   t.pos += 6
   if (src.charCodeAt(t.pos) === 0x0a) {
     t.pos++
   }
+  t.tokens.push({
+    type: "info_open",
+    value: "",
+    position: {
+      start,
+      end: t.pos,
+    },
+  })
   return true
 }
 
@@ -34,13 +39,18 @@ export const infoClose: TokenRule = (
   if (silent) {
     return true
   }
-  t.tokens.push({
-    type: "info_close",
-    value: "[/info]",
-  })
+  const start = t.pos
   t.pos += 7
   if (src.charCodeAt(t.pos) === 0x0a) {
     t.pos++
   }
+  t.tokens.push({
+    type: "info_close",
+    value: "",
+    position: {
+      start,
+      end: t.pos,
+    },
+  })
   return true
 }

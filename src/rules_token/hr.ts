@@ -11,14 +11,19 @@ const hr: TokenRule = (
   if (silent) {
     return true
   }
-  t.tokens.push({
-    type: "hr",
-    value: "[hr]",
-  })
+  const start = t.pos
   t.pos += 4
   if (src.charCodeAt(t.pos) === 0x0a) {
     t.pos++
   }
+  t.tokens.push({
+    type: "hr",
+    value: "",
+    position: {
+      start,
+      end: t.pos,
+    },
+  })
   return true
 }
 export default hr
