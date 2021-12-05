@@ -14,7 +14,17 @@ import { Plugin, unified } from "unified"
 import parser from "unofficial-chatwork-parser"
 
 import MyLink from "../MyLink"
-import { infoBodyHandler, infoHandler, infoHeadingHandler } from "./handlers"
+import {
+  infoBodyHandler,
+  infoHandler,
+  infoHeadingHandler,
+  mensionHandler,
+  piconHandler,
+  piconNameHandler,
+  plainHandler,
+  quoteHandler,
+  replyHandler,
+} from "./handlers"
 
 const processor = unified()
   .use(parser)
@@ -23,6 +33,12 @@ const processor = unified()
       info: infoHandler,
       "info-heading": infoHeadingHandler,
       "info-body": infoBodyHandler,
+      quote: quoteHandler,
+      mension: mensionHandler,
+      reply: replyHandler,
+      picon: piconHandler,
+      piconname: piconNameHandler,
+      plain: plainHandler,
     },
   } as MdOptions)
   .use(
