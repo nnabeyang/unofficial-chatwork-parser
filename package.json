@@ -1,6 +1,6 @@
 {
   "name": "unofficial-chatwork-parser",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "unified plugin to parse Chatwork message",
   "repository": "https://github.com/nnabeyang/unofficial-chatwork-parser",
   "bugs": "https://github.com/nnabeyang/unofficial-chatwork-parser/issues",
