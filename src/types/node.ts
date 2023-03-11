@@ -5,6 +5,7 @@ import {
   RowContent,
   TableContent,
   TopLevelContent,
+  Code,
 } from "mdast"
 import { Node, Parent as UnistParent } from "unist"
 
@@ -22,6 +23,7 @@ export type Content =
   | Mension
   | Reply
   | Quote
+  | Code
   | Plain
 
 export interface Parent extends UnistParent {

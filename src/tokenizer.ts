@@ -3,6 +3,7 @@ import hr from "./rules_token/hr"
 import { infoClose, infoOpen } from "./rules_token/info"
 import picon from "./rules_token/picon"
 import { qtClose, qtOpen } from "./rules_token/quote"
+import { codeClose, codeOpen } from "./rules_token/code"
 import reply from "./rules_token/reply"
 import text from "./rules_token/text"
 import { titleClose, titleOpen } from "./rules_token/title"
@@ -14,6 +15,8 @@ export default class Tokenizer implements ITokenizer {
   rules: TokenRule[] = [
     qtOpen,
     qtClose,
+    codeOpen,
+    codeClose,
     infoOpen,
     infoClose,
     titleOpen,

@@ -12,6 +12,8 @@ export type TokenType =
   | "reply_open"
   | "quote_open"
   | "quote_close"
+  | "code_open"
+  | "code_close"
   | "eof"
 interface Position {
   start: number

@@ -1509,3 +1509,87 @@ test("linkfy2", () => {
     },
   ])
 })
+
+test("code", () => {
+  let t = new Tokenizer(`[code]console.log('hello, world')[/code]`)
+  t = new LinkifyTokenizer(t)
+  let state = new State()
+  let contents: Content[] = []
+  parse(state, 0, t, "root", contents)
+  expect(contents).toEqual([
+    {
+      type: "code",
+      value: "console.log('hello, world')",
+      position: {
+        start: {
+          line: -1,
+          column: -1,
+          offset: 6,
+        },
+        end: {
+          line: -1,
+          column: -1,
+          offset: 33,
+        },
+      },
+    },
+  ])
+})
+
+test("code in info title", () => {
+  let t = new Tokenizer(
+    `[info][title]TITLE[/title][code]print('ok')[/code][/info]`
+  )
+  let state = new State()
+  let contents: Content[] = []
+  parse(state, 0, t, "root", contents)
+  expect(contents).toEqual([
+    {
+      type: "info",
+      children: [
+        {
+          type: "info-heading",
+          children: [
+            {
+              type: "plain",
+              value: "TITLE",
+              position: {
+                start: {
+                  line: -1,
+                  column: -1,
+                  offset: 13,
+                },
+                end: {
+                  line: -1,
+                  column: -1,
+                  offset: 18,
+                },
+              },
+            },
+          ],
+        },
+        {
+          type: "info-body",
+          children: [
+            {
+              type: "code",
+              value: "print('ok')",
+              position: {
+                start: {
+                  line: -1,
+                  column: -1,
+                  offset: 32,
+                },
+                end: {
+                  line: -1,
+                  column: -1,
+                  offset: 43,
+                },
+              },
+            },
+          ],
+        },
+      ],
+    },
+  ])
+})

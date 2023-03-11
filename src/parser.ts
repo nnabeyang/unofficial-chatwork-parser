@@ -1,4 +1,4 @@
-import { Link, Text, ThematicBreak } from "mdast"
+import { Link, Text, ThematicBreak, Code } from "mdast"
 import { Point } from "unist"
 import {
   Content,
@@ -55,6 +55,13 @@ const parseRoot: parse = (
       case "quote_open":
         parseQuote(state, level, t, parentType, contents)
         break
+      case "code_open":
+        if (parentType !== "title") {
+          parseCode(state, level, t, parentType, contents)
+        } else {
+          parseText(state, level, t, parentType, contents)
+        }
+        break
       case "link":
         parseLink(state, level, t, parentType, contents)
         break
@@ -63,6 +70,7 @@ const parseRoot: parse = (
       case "title_open":
       case "title_close":
       case "quote_close":
+      case "code_close":
         parseText(state, level, t, parentType, contents)
         break
       default:
@@ -618,5 +626,65 @@ const parseQuote: parse = (
     }
     contents.push(content)
     Array.prototype.push.apply(contents, qtContents)
+  }
+}
+const parseCode: parse = (
+  state: IState,
+  level: number,
+  t: ITokenizer,
+  parentType: ParentType,
+  contents: Content[]
+): void => {
+  let start: Token = t.next()
+  let token: Token = start
+  while (
+    (token = t.peek()) &&
+    token.type !== "eof" &&
+    token.type !== "code_close"
+  ) {
+    t.next()
+  }
+
+  if (token.type === "code_close") {
+    const offset = start.position.end
+    const end = token.position.start
+    t.next()
+    let content: Code = {
+      type: "code",
+      value: t.src.slice(offset, end),
+      position: {
+        start: {
+          line: -1,
+          column: -1,
+          offset: offset,
+        },
+        end: {
+          line: -1,
+          column: -1,
+          offset: end,
+        },
+      },
+    }
+    contents.push(content)
+  } else {
+    const offset = start.position.start
+    const end = t.src.length
+    let content: Plain = {
+      type: "plain",
+      value: t.src.slice(offset, end),
+      position: {
+        start: {
+          line: -1,
+          column: -1,
+          offset: offset,
+        },
+        end: {
+          line: -1,
+          column: -1,
+          offset: end,
+        },
+      },
+    }
+    contents.push(content)
   }
 }
