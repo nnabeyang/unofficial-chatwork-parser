@@ -1080,6 +1080,107 @@ test("qt", () => {
   ])
 })
 
+test("qt japanese", () => {
+  let t = new Tokenizer(`[引用 aid=1234567 time=1234567890]hello[/引用]`)
+  t = new LinkifyTokenizer(t)
+  let state = new State()
+  let contents: Content[] = []
+  parse(state, 0, t, "root", contents)
+  expect(contents).toEqual([
+    {
+      type: "quote",
+      aid: "1234567",
+      time: 1234567890,
+      children: [
+        {
+          type: "plain",
+          value: "hello",
+          position: {
+            start: {
+              line: -1,
+              column: -1,
+              offset: 32,
+            },
+            end: {
+              line: -1,
+              column: -1,
+              offset: 37,
+            },
+          },
+        },
+      ],
+    },
+  ])
+})
+
+test("qt japanese2", () => {
+  let t = new Tokenizer(
+    `[引用][qtmeta aid=1234567 time=1234567890]hello[/引用]`
+  )
+  t = new LinkifyTokenizer(t)
+  let state = new State()
+  let contents: Content[] = []
+  parse(state, 0, t, "root", contents)
+  expect(contents).toEqual([
+    {
+      type: "quote",
+      aid: "1234567",
+      time: 1234567890,
+      children: [
+        {
+          type: "plain",
+          value: "hello",
+          position: {
+            start: {
+              line: -1,
+              column: -1,
+              offset: 40,
+            },
+            end: {
+              line: -1,
+              column: -1,
+              offset: 45,
+            },
+          },
+        },
+      ],
+    },
+  ])
+})
+
+test("qt mix", () => {
+  let t = new Tokenizer(`[引用 aid=1234567 time=1234567890]hello[/qt]`)
+  t = new LinkifyTokenizer(t)
+  let state = new State()
+  let contents: Content[] = []
+  parse(state, 0, t, "root", contents)
+  expect(contents).toEqual([
+    {
+      type: "quote",
+      aid: "1234567",
+      time: 1234567890,
+      children: [
+        {
+          type: "plain",
+          value: "hello",
+          position: {
+            start: {
+              line: -1,
+              column: -1,
+              offset: 32,
+            },
+            end: {
+              line: -1,
+              column: -1,
+              offset: 37,
+            },
+          },
+        },
+      ],
+    },
+  ])
+})
+
 test("qt2", () => {
   let t = new Tokenizer(`[qt][qtmeta aid=1234567 time=1234567890]hello`)
   t = new LinkifyTokenizer(t)

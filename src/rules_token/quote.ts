@@ -1,5 +1,6 @@
 import { ITokenizer, TokenRule } from "../types/token"
-const re = /^\[qt\]\[qtmeta aid=(\d+) time=(\d+)\]/
+const re = /^\[(qt\]\[qtmeta|引用|引用\]\[qtmeta) aid=(\d+) time=(\d+)\]/
+const re2 = /^\[\/(qt|引用)\]/
 export const qtOpen: TokenRule = (
   len: number,
   src: string,
@@ -19,25 +20,25 @@ export const qtOpen: TokenRule = (
     value: "",
     position: {
       start: pos,
-      end: pos + 11,
+      end: pos + m[1].length,
     },
   })
-  pos += 11
-  t.tokens.push({
-    type: "text",
-    value: m[1],
-    position: {
-      start: pos,
-      end: pos + 5 + m[1].length,
-    },
-  })
-  pos += 5 + m[1].length
+  pos += m[1].length
   t.tokens.push({
     type: "text",
     value: m[2],
     position: {
       start: pos,
-      end: pos + 7 + m[2].length,
+      end: pos + 5 + m[2].length,
+    },
+  })
+  pos += 5 + m[2].length
+  t.tokens.push({
+    type: "text",
+    value: m[3],
+    position: {
+      start: pos,
+      end: pos + 7 + m[3].length,
     },
   })
   t.pos += m[0].length
@@ -50,7 +51,8 @@ export const qtClose: TokenRule = (
   t: ITokenizer,
   silent: Boolean
 ): Boolean => {
-  if (len - t.pos < 5 || src.slice(t.pos, t.pos + 5) !== "[/qt]") {
+  let m: RegExpMatchArray | null
+  if ((m = src.slice(t.pos, t.pos + 50).match(re2)) === null) {
     return false
   }
   if (silent) {
@@ -61,10 +63,10 @@ export const qtClose: TokenRule = (
     value: "",
     position: {
       start: t.pos,
-      end: t.pos + 5,
+      end: t.pos + m[0].length,
     },
   })
-  t.pos += 5
+  t.pos += m[0].length
   if (src.charCodeAt(t.pos) === 0x0a) {
     t.pos++
   }
